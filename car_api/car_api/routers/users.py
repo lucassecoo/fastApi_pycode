@@ -125,10 +125,10 @@ async def update_user(
     update_data = user_update.model_dump(exclude_unset=True)
 
     if "username" in update_data and update_data["username"] != user.username:
-        await validar_username_unico(user.username, db)
+        await validar_username_unico(user_update["username"], db)
 
     if "email" in update_data and update_data["email"] != user.email:
-        await validar_email_unico(user.email, db)
+        await validar_email_unico(update_data["email"], db)
 
     if "password" in update_data:
         update_data["password"] = get_password_hash(update_data["password"])
@@ -138,7 +138,7 @@ async def update_user(
 
     await db.commit()
     await db.refresh(db_user)
-    return
+    return user
 
 
 @router.delete(
