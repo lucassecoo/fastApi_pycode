@@ -1,7 +1,7 @@
 
 from datetime import datetime
 from decimal import Decimal
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, field_validator
 from typing import Optional, List
 
 from car_api.models.cars import FuelType, TransmissionType
@@ -23,6 +23,37 @@ class CarSchema(BaseModel):
     brand_id: int
     owner_id: int
 
+    @field_validator("model")
+    def model_min_length(cls, value):
+        if len(value.strip()) <= 2:
+            raise ValueError("O modelo deve ter pelo menos 2 caracteres")
+        return value.strip()
+    
+    @field_validator("color")
+    def color_min_length(cls, value):
+        if len(value.strip()) <= 2:
+            raise ValueError("Cor deve ter pelo menos 2 caracteres")
+        return value.strip()
+    
+    @field_validator("plate")
+    def plate_min_length(cls, value):
+        plate = value.strip().upper()
+        if len(plate) < 7 or len(plate) > 10:
+            raise ValueError("Placa deve ter pelo menos 7 caracteres")
+        return plate
+
+    @field_validator("factory_year", "model_year")
+    def year_validation(cls, value):
+        if value < 1900 or value > 2028:
+            raise ValueError("Ano deve estar entre 1900 e 2028")
+        return value
+
+    @field_validator("factory_year", "model_year")
+    def price_validation(cls, value):
+        if value <= 0:
+            raise ValueError("Preco deve ser positivo")
+        return value
+
 class CarUpdateSchema(BaseModel):
     model: Optional[str] = None
     factory_year: Optional[int] = None
@@ -36,6 +67,37 @@ class CarUpdateSchema(BaseModel):
     is_available: Optional[bool] = None
     brand_id: Optional[int] = None
     owner_id: Optional[int] = None
+
+    @field_validator("model")
+    def model_min_length(cls, value):
+        if len(value.strip()) <= 2:
+            raise ValueError("O modelo deve ter pelo menos 2 caracteres")
+        return value.strip()
+    
+    @field_validator("color")
+    def color_min_length(cls, value):
+        if len(value.strip()) <= 2:
+            raise ValueError("Cor deve ter pelo menos 2 caracteres")
+        return value.strip()
+    
+    @field_validator("plate")
+    def plate_min_length(cls, value):
+        plate = value.strip().upper()
+        if len(plate) < 7 or len(plate) > 10:
+            raise ValueError("Placa deve ter pelo menos 7 caracteres")
+        return plate
+
+    @field_validator("factory_year", "model_year")
+    def year_validation(cls, value):
+        if value < 1900 or value > 2028:
+            raise ValueError("Ano deve estar entre 1900 e 2028")
+        return value
+
+    @field_validator("factory_year", "model_year")
+    def price_validation(cls, value):
+        if value <= 0:
+            raise ValueError("Preco deve ser positivo")
+        return value
 
 class CarPublicSchema(BaseModel):
     model_config = ConfigDict(from_attributes=True)

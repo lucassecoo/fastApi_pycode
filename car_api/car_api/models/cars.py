@@ -17,12 +17,12 @@ class TransmissionType(str,Enum):
     CVT = 'cvt'
 
 class FuelType(str, Enum):
-    GASOLINA: 'gasolina'
-    DIESEL: 'diesel'
-    ETHANOL: 'ethanol'
-    FLEX: 'flex'
-    ELETRIC: 'eletric'
-    HYBRID: 'hybrid'
+    GASOLINA = 'gasolina'
+    DIESEL = 'diesel'
+    ETHANOL = 'ethanol'
+    FLEX = 'flex'
+    ELETRIC = 'eletric'
+    HYBRID = 'hybrid'
 
 class Brand(Base):
     __tablename__ = "brands"
@@ -46,7 +46,7 @@ class Car(Base):
     color: Mapped[str] = mapped_column(String(30))
     plate: Mapped[str] = mapped_column( String(10), unique=True, index=True)
     fuel_type: Mapped[FuelType] = mapped_column(String(20))
-    transmission: Mapped[TransmissionType] = mapped_column(String(20))
+    transmission_type: Mapped[TransmissionType] = mapped_column(String(20))
     price: Mapped[Decimal] = mapped_column(Numeric(10,2))
     description: Mapped[Optional[str]] = mapped_column(Text)
     is_available: Mapped[bool] = mapped_column(default=True)
@@ -55,5 +55,5 @@ class Car(Base):
     update_at: Mapped[datetime] = mapped_column(onupdate=func.now(), server_default=func.now())
     created_at: Mapped[datetime] = mapped_column(server_default=func.now())
 
-    brand: Mapped['Brand'] = relationship("Brand", back_populates="cars")
+    brand: Mapped['Car'] = relationship("Brand", back_populates="cars")
     owner: Mapped['User'] = relationship("User", back_populates="cars")

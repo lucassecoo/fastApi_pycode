@@ -5,8 +5,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from car_api.schemas.brands import (BrandListPublicSchema, BrandPublicSchema, BrandSchema, BrandUpdateSchema)
 from car_api.core.database import get_session
-from car_api.models.cars import Brand
 from car_api.models.cars import Car
+from car_api.models.cars import Brand
 from sqlalchemy import func, select, exists
 
 router = APIRouter()
@@ -87,7 +87,7 @@ async def get_user(
     brand_id: int,
     db: AsyncSession = Depends(get_session),
 ):
-    brand = await db.get(Brand, brand_id)
+    brand = await db.get(Car, brand_id)
     if not brand:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Marca não encontrado"
@@ -102,7 +102,7 @@ async def get_user(
 async def update_brand(
     brand_id:int, brand_update:BrandSchema, db: AsyncSession = Depends(get_session)
 ):
-    brand = await db.get(Brand, brand_id)
+    brand = await db.get(Car, brand_id)
 
     if not brand:
         raise HTTPException(
@@ -129,7 +129,7 @@ async def delete_user(
     brand_id: int,
     db: AsyncSession = Depends(get_session),
 ):
-    brand = await db.get(Brand, brand_id)
+    brand = await db.get(Car, brand_id)
     if not brand:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Marca não encontrada"
